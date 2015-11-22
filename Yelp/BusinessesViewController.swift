@@ -17,6 +17,7 @@ class BusinessesViewController: UIViewController {
     var searchBar:UISearchBar!
     var businesses: [Business]! = []
     var filterConfigs = FilterConfig.createaFilterConfigs()
+    var loadingView:UIActivityIndicatorView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,16 +27,23 @@ class BusinessesViewController: UIViewController {
         search()
     }
     
-    func search() {
+    func search(offset:Int = 0) {
         
-        JTProgressHUD.show()
+        if offset == 0 {
+            JTProgressHUD.show()
+        }
         
-        Business.searchWithTerm(searchBar.text!, sort: self.sortBy(), categories: self.categories(), deals: self.offerDeal(), meters: self.distanceByMeters()) { (businesses: [Business]!, error: NSError!) -> Void in
-            self.businesses = businesses
+        Business.searchWithTerm(searchBar.text!, offset: offset, sort: self.sortBy(), categories: self.categories(), deals: self.offerDeal(), meters: self.distanceByMeters()) { (businesses: [Business]!, error: NSError!) -> Void in
+            self.loadingView.hidden = true
+            self.loadingView.stopAnimating()
+            if offset > 0 {
+                self.businesses.appendContentsOf(businesses)
+            } else {
+                self.businesses = businesses
+            }
             
             JTProgressHUD.hide()
             
-            self.tableView.setContentOffset(CGPointZero, animated: true)
             self.tableView.reloadData()
         }
     }
@@ -54,6 +62,24 @@ class BusinessesViewController: UIViewController {
         searchBar.placeholder = "Restaurants"
         searchBar.delegate = self
         self.navigationItem.titleView = searchBar
+        
+        // add trigger at the end icon
+        let tableViewFooter = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 50))
+        loadingView = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
+        loadingView.hidden = true
+        loadingView.stopAnimating()
+        loadingView.center = tableViewFooter.center
+        
+        tableViewFooter.addSubview(loadingView)
+        self.tableView.tableFooterView = tableViewFooter
+        
+        loadingView.translatesAutoresizingMaskIntoConstraints = false
+        
+        let views = ["view": tableViewFooter, "newView": loadingView]
+        let horizontalConstraints = NSLayoutConstraint.constraintsWithVisualFormat("H:[view]-(<=0)-[newView(320)]", options: NSLayoutFormatOptions.AlignAllCenterY, metrics: nil, views: views)
+        view.addConstraints(horizontalConstraints)
+        let verticalConstraints = NSLayoutConstraint.constraintsWithVisualFormat("V:[view]-(<=0)-[newView(50)]", options: NSLayoutFormatOptions.AlignAllCenterX, metrics: nil, views: views)
+        view.addConstraints(verticalConstraints)
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
@@ -77,6 +103,12 @@ extension BusinessesViewController : UITableViewDelegate, UITableViewDataSource 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("BusinessCell") as! BusinessTableViewCell
         cell.business = self.businesses[indexPath.row]
+        
+        if indexPath.row == businesses.count - 1 && loadingView.hidden {
+            loadingView.hidden = false
+            loadingView.startAnimating()
+            search(self.businesses.count)
+        }
         return cell
     }
     
