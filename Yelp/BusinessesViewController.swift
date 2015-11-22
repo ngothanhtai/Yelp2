@@ -36,13 +36,18 @@ class BusinessesViewController: UIViewController {
         Business.searchWithTerm(searchBar.text!, offset: offset, sort: self.sortBy(), categories: self.categories(), deals: self.offerDeal(), meters: self.distanceByMeters()) { (businesses: [Business]!, error: NSError!) -> Void in
             self.loadingView.hidden = true
             self.loadingView.stopAnimating()
-            if offset > 0 {
-                self.businesses.appendContentsOf(businesses)
-            } else {
-                self.businesses = businesses
-            }
-            
             JTProgressHUD.hide()
+            
+            if businesses == nil {
+                self.businesses = [Business]()
+            }
+            else {
+                if offset > 0 {
+                    self.businesses.appendContentsOf(businesses)
+                } else {
+                    self.businesses = businesses
+                }
+            }
             
             self.tableView.reloadData()
         }
@@ -97,10 +102,22 @@ class BusinessesViewController: UIViewController {
 
 extension BusinessesViewController : UITableViewDelegate, UITableViewDataSource {
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if self.businesses.count == 0 {
+            return 1
+        }
         return self.businesses.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        
+        if self.businesses.count == 0 {
+            let cell = UITableViewCell()
+            cell.textLabel?.text = "No results"
+            cell.selectionStyle = .None
+            cell.textLabel?.textAlignment = .Center
+            return cell
+        }
+        
         let cell = tableView.dequeueReusableCellWithIdentifier("BusinessCell") as! BusinessTableViewCell
         cell.business = self.businesses[indexPath.row]
         
