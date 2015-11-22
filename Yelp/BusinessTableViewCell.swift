@@ -32,8 +32,9 @@ class BusinessTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
 
-        self.imgView.layer.masksToBounds = true
+        
         self.imgView.layer.cornerRadius = 8
+        self.imgView.layer.masksToBounds = true
         self.imgView.layer.borderWidth = 1
         self.imgView.layer.borderColor = UIColor.darkGrayColor().CGColor
     }

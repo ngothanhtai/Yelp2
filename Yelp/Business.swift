@@ -16,8 +16,11 @@ class Business: NSObject {
     let distance: String?
     let ratingImageURL: NSURL?
     let reviewCount: NSNumber?
+    var latitude:Double?
+    var longitude:Double?
     
     init(dictionary: NSDictionary) {
+//        print("dictionary", dictionary)
         name = dictionary["name"] as? String
         
         let imageURLString = dictionary["image_url"] as? String
@@ -42,6 +45,9 @@ class Business: NSObject {
                 }
                 address += neighborhoods![0] as! String
             }
+            
+            self.latitude = (location!["coordinate"] as! NSDictionary)["latitude"] as? Double
+            self.longitude = (location!["coordinate"] as! NSDictionary)["longitude"] as? Double
         }
         self.address = address
         
@@ -88,7 +94,7 @@ class Business: NSObject {
         YelpClient.sharedInstance.searchWithTerm(term, completion: completion)
     }
     
-    class func searchWithTerm(term: String, sort: YelpSortMode?, categories: [String]?, deals: Bool?, completion: ([Business]!, NSError!) -> Void) -> Void {
-        YelpClient.sharedInstance.searchWithTerm(term, sort: sort, categories: categories, deals: deals, completion: completion)
+    class func searchWithTerm(term: String, sort: YelpSortMode?, categories: [String]?, deals: Bool?, meters: Float?, completion: ([Business]!, NSError!) -> Void) -> Void {
+        YelpClient.sharedInstance.searchWithTerm(term, sort: sort, categories: categories, deals: deals, meters: meters, completion: completion)
     }
 }
