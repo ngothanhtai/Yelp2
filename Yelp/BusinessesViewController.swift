@@ -29,17 +29,20 @@ class BusinessesViewController: UIViewController {
         Business.searchWithTerm(searchBar.text!, sort: self.sortBy(), categories: self.categories(), deals: self.offerDeal(), meters: self.distanceByMeters()) { (businesses: [Business]!, error: NSError!) -> Void in
             self.businesses = businesses
             
+            self.tableView.setContentOffset(CGPointZero, animated: true)
             self.tableView.reloadData()
         }
     }
     
     func initControls() {
+        
         self.tableView.delegate = self
         self.tableView.dataSource = self
         self.tableView.estimatedRowHeight = 200
         self.tableView.rowHeight = UITableViewAutomaticDimension
         
         self.automaticallyAdjustsScrollViewInsets = false
+        self.navigationController?.navigationBar.barStyle = .Black;
         
         searchBar = UISearchBar()
         searchBar.placeholder = "Restaurants"
