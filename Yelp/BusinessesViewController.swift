@@ -18,6 +18,7 @@ class BusinessesViewController: UIViewController {
     var businesses: [Business]! = []
     var filterConfigs = FilterConfig.createaFilterConfigs()
     var loadingView:UIActivityIndicatorView!
+    var shouldStopTrigger:Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,6 +28,12 @@ class BusinessesViewController: UIViewController {
         search()
     }
     
+    override func viewWillAppear(animated: Bool) {
+        loadingView.hidden = true
+        loadingView.stopAnimating()
+        shouldStopTrigger = false
+    }
+    
     func search(offset:Int = 0) {
         
         if offset == 0 {
@@ -34,14 +41,15 @@ class BusinessesViewController: UIViewController {
         }
         
         Business.searchWithTerm(searchBar.text!, offset: offset, sort: self.sortBy(), categories: self.categories(), deals: self.offerDeal(), meters: self.distanceByMeters()) { (businesses: [Business]!, error: NSError!) -> Void in
-            self.loadingView.hidden = true
-            self.loadingView.stopAnimating()
+            
             JTProgressHUD.hide()
             
             if businesses == nil {
                 self.businesses = [Business]()
+                self.shouldStopTrigger = true
             }
             else {
+                self.shouldStopTrigger = businesses.count == 0
                 if offset > 0 {
                     self.businesses.appendContentsOf(businesses)
                 } else {
@@ -50,6 +58,9 @@ class BusinessesViewController: UIViewController {
             }
             
             self.tableView.reloadData()
+            
+            self.loadingView.hidden = true
+            self.loadingView.stopAnimating()
         }
     }
     
@@ -121,7 +132,7 @@ extension BusinessesViewController : UITableViewDelegate, UITableViewDataSource 
         let cell = tableView.dequeueReusableCellWithIdentifier("BusinessCell") as! BusinessTableViewCell
         cell.business = self.businesses[indexPath.row]
         
-        if indexPath.row == businesses.count - 1 && loadingView.hidden {
+        if indexPath.row == businesses.count - 1 && loadingView.hidden && !shouldStopTrigger {
             loadingView.hidden = false
             loadingView.startAnimating()
             search(self.businesses.count)

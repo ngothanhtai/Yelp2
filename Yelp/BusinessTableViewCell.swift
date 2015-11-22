@@ -19,7 +19,9 @@ class BusinessTableViewCell: UITableViewCell {
     
     var business:Business! {
         didSet {
-            self.imgView.setImageWithURL(business.imageURL!)
+            if business.imageURL != nil {
+                self.imgView.setImageWithURL(business.imageURL!)
+            }
             self.nameLabel.text = business.name!
             self.ratingImgView.setImageWithURL(business.ratingImageURL!)
             self.addressLabel.text = business.address!
