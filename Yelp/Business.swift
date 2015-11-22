@@ -20,7 +20,6 @@ class Business: NSObject {
     var longitude:Double?
     
     init(dictionary: NSDictionary) {
-//        print("dictionary", dictionary)
         name = dictionary["name"] as? String
         
         let imageURLString = dictionary["image_url"] as? String

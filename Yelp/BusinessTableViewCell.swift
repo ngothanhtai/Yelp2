@@ -31,18 +31,10 @@ class BusinessTableViewCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-
         
         self.imgView.layer.cornerRadius = 8
         self.imgView.layer.masksToBounds = true
         self.imgView.layer.borderWidth = 1
         self.imgView.layer.borderColor = UIColor.darkGrayColor().CGColor
     }
-
-    override func setSelected(selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
-
 }

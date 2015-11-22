@@ -19,6 +19,8 @@ class FiltersTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.navigationController?.navigationBar.barStyle = .Black;
     }
     
     @IBAction func onCancelBarButton(sender:AnyObject) {
@@ -33,9 +35,7 @@ class FiltersTableViewController: UITableViewController {
 
 extension FiltersTableViewController:FiltersTableViewCellDelegate {
     func onSwitch(cell: UITableViewCell, state: Bool) {
-        
         if let indexPath = tableView.indexPathForCell(cell) {
-            
             if filterConfigs[indexPath.section].type == .Checkmark {
                 var i = 0
                 for i = 0; i < filterConfigs[indexPath.section].arrKV.count; i++ {

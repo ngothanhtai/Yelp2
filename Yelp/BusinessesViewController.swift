@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import JTProgressHUD
 
 class BusinessesViewController: UIViewController {
 
@@ -26,8 +27,13 @@ class BusinessesViewController: UIViewController {
     }
     
     func search() {
+        
+        JTProgressHUD.show()
+        
         Business.searchWithTerm(searchBar.text!, sort: self.sortBy(), categories: self.categories(), deals: self.offerDeal(), meters: self.distanceByMeters()) { (businesses: [Business]!, error: NSError!) -> Void in
             self.businesses = businesses
+            
+            JTProgressHUD.hide()
             
             self.tableView.setContentOffset(CGPointZero, animated: true)
             self.tableView.reloadData()
