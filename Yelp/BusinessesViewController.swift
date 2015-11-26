@@ -166,9 +166,11 @@ extension BusinessesViewController : UISearchBarDelegate {
 }
 
 extension BusinessesViewController:FiltersTableViewControllerDelegate {
-    func onSearch(filterConfigs: [FilterConfig]) {
+    
+    func filterTableViewController(filterTableViewController: FiltersTableViewController, filterConfigs: [FilterConfig]) {
         self.filterConfigs = filterConfigs
         self.search()
+
     }
 }
 

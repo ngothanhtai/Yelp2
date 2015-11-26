@@ -9,7 +9,7 @@
 import UIKit
 
 protocol FiltersTableViewControllerDelegate {
-    func onSearch(filterConfig:[FilterConfig])
+    func filterTableViewController(filterTableViewController:FiltersTableViewController, filterConfigs:[FilterConfig])
 }
 
 class FiltersTableViewController: UITableViewController {
@@ -28,7 +28,7 @@ class FiltersTableViewController: UITableViewController {
     }
     
     @IBAction func onSearchBarButton(sender:AnyObject) {
-        delegate?.onSearch(self.filterConfigs)
+        delegate?.filterTableViewController(self, filterConfigs: self.filterConfigs)
         self.dismissViewControllerAnimated(true, completion: nil)
     }
 }
